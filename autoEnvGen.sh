@@ -15,11 +15,11 @@ function handle_js() {
       ENV_VARIABLES+=("${VARIABLE}")
     fi
   done;
-  if [[ ! -f .env.example ]]; # Only adds new data, if no .env.example exists
+  if [[ ! -f env.example ]]; # Only adds new data, if no .env.example exists
   then
-    touch .env.example
+    touch env.example
     for VAR in ${ENV_VARIABLES[@]};do
-      echo "$VAR =" >> .env.example
+      echo "$VAR =" >> env.example
     done;
   fi
 }
@@ -39,11 +39,11 @@ handle_py () {
       ENV_VARIABLES+=("${VARIABLE}")
     fi
   done;
-  if [[ ! -f .env.example ]]; # Only adds new data, if no .env.example exists
+  if [[ ! -f env.example ]]; # Only adds new data, if no .env.example exists
   then
-    touch .env.example
+    touch env.example
     for VAR in ${ENV_VARIABLES[@]};do
-      echo "$VAR =" >> .env.example
+      echo "$VAR =" >> env.example
     done;
   fi
 }
