@@ -11,7 +11,6 @@ A lightweight shell script to automatically generate a `.env.example` file by sc
 - [ ] Supports Go projects
 - [ ] Customizable variable name patterns
 - [ ] Better cli.
-> Tick the features you complete! Submit PRs for new features or suggest enhancements via issues.
 
 ## Usage
 
