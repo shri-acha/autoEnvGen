@@ -60,6 +60,7 @@ for FILE_PATH in ${FILE_PATH_ARR[@]};
   do
   FILE_CONTENTS="$(cat $FILE_PATH)"
 
+# For python file type
   if [[ $FILE_TYPE == "py" ]];
     then
       readarray -t ENV_VARIABLE <<< $(handle_py $FILE_PATH)
@@ -68,6 +69,7 @@ for FILE_PATH in ${FILE_PATH_ARR[@]};
         ENV_VARIABLES+=($ENV_VAR)
       done
 
+# For js/ts type
   elif [ $FILE_TYPE == "js" -o $FILE_TYPE == "ts" ]; 
     then
       readarray -t ENV_VARIABLE <<< $(handle_js $FILE_PATH)
@@ -86,3 +88,4 @@ then
   done;
 fi
 
+echo "$(awk '!seen[$0]++' .env.example)" > .env.example # Removes duplicate data, if any.
