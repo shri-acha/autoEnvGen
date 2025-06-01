@@ -1,27 +1,22 @@
 #!/bin/bash
 
 function handle_js() {
-
-  PRE_ENV_VARIABLES="$( echo "$FILE_CONTENTS" | grep process.env )" # Stores the grepped raw data
+  FILE_PATH=$1
+  FILE_CONTENTS=$(cat $FILE_PATH)
+  PRE_ENV_VARIABLES=$( echo "$FILE_CONTENTS" | grep process.env ) # Stores the grepped raw data
   ENV_VARIABLES=()
-
+    
   readarray -t ENV_VARIABLE <<< "$PRE_ENV_VARIABLES" # Stores the lines as array elems
 
-  for i in "${ENV_VARIABLE[@]}"; do 
-   
+
+  for i in "${ENV_VARIABLE[@]}"; do  
   if [[ "$i" =~ process\.env\.([A-Za-z0-9_-]+) ]]; # Regex pattern matching magic
     then
-      VARIABLE="${BASH_REMATCH[1]}" 
+      VARIABLE="$(echo ${BASH_REMATCH[1]})" 
       ENV_VARIABLES+=("${VARIABLE}")
     fi
   done;
-  if [[ ! -f env.example ]]; # Only adds new data, if no .env.example exists
-  then
-    touch env.example
-    for VAR in ${ENV_VARIABLES[@]};do
-      echo "$VAR =" >> env.example
-    done;
-  fi
+  echo ${ENV_VARIABLES[@]}
 }
 
 handle_py () {
@@ -37,30 +32,57 @@ handle_py () {
     then
       VARIABLE="${BASH_REMATCH[1]}" 
       ENV_VARIABLES+=("${VARIABLE}")
+      printf "%s" ${VARIABLE}
     fi
   done;
-  if [[ ! -f env.example ]]; # Only adds new data, if no .env.example exists
-  then
-    touch env.example
-    for VAR in ${ENV_VARIABLES[@]};do
-      echo "$VAR =" >> env.example
-    done;
-  fi
 }
 
 
-FILE_PATH=$1
-FILE_NAME=$( basename $FILE_PATH )
+# Entry point
+#
+FILE_TYPE=$1 
+ENV_VARIABLES=()
 
-FILE_TYPE=$( basename $FILE_PATH | cut -d'.' -f 2 ) 
+FILE_PATHS=$(find . \
+  -type d \( -wholename './.*' -o -name 'node_modules' \) -prune -false \
+  -o -type f -name "*.$FILE_TYPE")
 
-FILE_CONTENTS="$(cat $FILE_PATH)"
+#Debug
+#
+ENV_VARIABLES=()
 
-if [[ $FILE_TYPE == "py" ]];
+
+readarray -t FILE_PATH_ARR <<< $FILE_PATHS
+
+# For each file checking for env variables
+#
+for FILE_PATH in ${FILE_PATH_ARR[@]};
+  do
+  FILE_CONTENTS="$(cat $FILE_PATH)"
+
+  if [[ $FILE_TYPE == "py" ]];
+    then
+      readarray -t ENV_VARIABLE <<< $(handle_py $FILE_PATH)
+      for ENV_VAR in ${ENV_VARIABLE[@]};
+      do
+        ENV_VARIABLES+=($ENV_VAR)
+      done
+
+  elif [ $FILE_TYPE == "js" -o $FILE_TYPE == "ts" ]; 
+    then
+      readarray -t ENV_VARIABLE <<< $(handle_js $FILE_PATH)
+      for ENV_VAR in ${ENV_VARIABLE[@]};
+      do
+        ENV_VARIABLES+=($ENV_VAR)
+      done
+  fi
+done;
+
+if [[ ! -f .env.example ]]; # Only adds new data, if no .env.example exists
 then
-  handle_py
-
-elif [[ $FILE_TYPE == "js" ]]; 
-then
-  handle_js
+  touch .env.example
+  for VAR in ${ENV_VARIABLES[@]};do
+    echo "$VAR =" >> .env.example 
+  done;
 fi
+
