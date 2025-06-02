@@ -1,13 +1,12 @@
 # autoEnvGen
 
-A lightweight shell script to automatically generate a `.env.example` file by scanning your codebase for environment variable usage. No need for an existing `.env` file—autoEnvGen inspects your source code to infer required environment variables, making onboarding and sharing requirements easier and safer.
-
+A lightweight shell script to automatically generate a `.env.example` file by scanning your codebase for environment variable usage.
 ## Features
 
 - [x] Multi-file & directory scanning
 - [x] Supports JavaScript projects
-- [x] Supports Python projects
-- [x] Supports TypeScript projects
+- [x] Partly Supports Python projects
+- [x] Partly Supports TypeScript projects
 - [ ] Supports Go projects
 - [ ] Customizable variable name patterns
 - [ ] Better cli.
