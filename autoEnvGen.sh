@@ -28,13 +28,13 @@ handle_py () {
 
   for i in "${ENV_VARIABLE[@]}"; do 
    
-  if [[ "$i" =~ os\.environ\[\'([A-Za-z0-9_-]+)\'\] ]]; # Regex pattern matching magic
+    if [[ "$i" =~ os\.environ[\[\(][\'\"]([A-Za-z0-9_-]+)[\'\"][\]\)] ]]; # Regex pattern matching magic
     then
       VARIABLE="${BASH_REMATCH[1]}" 
       ENV_VARIABLES+=("${VARIABLE}")
-      printf "%s" ${VARIABLE}
     fi
   done;
+  echo ${ENV_VARIABLES[@]}
 }
 
 
@@ -47,8 +47,6 @@ FILE_PATHS=$(find . \
   -type d \( -wholename './.*' -o -name 'node_modules' \) -prune -false \
   -o -type f -name "*.$FILE_TYPE")
 
-#Debug
-#
 ENV_VARIABLES=()
 
 
