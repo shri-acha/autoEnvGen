@@ -21,14 +21,14 @@ function handle_js () {
 
 function handle_py () {
 
-  PRE_ENV_VARIABLES="$( echo "$FILE_CONTENTS" | grep os.environ )" # Stores the grepped raw data
+  PRE_ENV_VARIABLES="$( echo "$FILE_CONTENTS" | grep -e os.environ -e os.getenv )" # Stores the grepped raw data
   ENV_VARIABLES=()
 
   readarray -t ENV_VARIABLE <<< "$PRE_ENV_VARIABLES" # Stores the lines as array elems
 
   for i in "${ENV_VARIABLE[@]}"; do 
    
-    if [[ "$i" =~ os\.environ[\[\(][\'\"]([A-Za-z0-9_-]+)[\'\"][\]\)] ]]; # Regex pattern matching magic
+    if [[ "$i" =~ os\.environ[\[\(][\'\"]([A-Za-z0-9_-]+)[\'\"][\]\)] || "$i" =~ os\.getenv\([\'\"]([A-Za-z0-9_-]+)[\'\"]\) ]]; # Regex pattern matching magic
     then
       VARIABLE="${BASH_REMATCH[1]}" 
       ENV_VARIABLES+=("${VARIABLE}")
