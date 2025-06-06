@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function handle_js() {
+function handle_js () {
   FILE_PATH=$1
   FILE_CONTENTS=$(cat $FILE_PATH)
   PRE_ENV_VARIABLES=$( echo "$FILE_CONTENTS" | grep process.env ) # Stores the grepped raw data
@@ -19,7 +19,7 @@ function handle_js() {
   echo ${ENV_VARIABLES[@]}
 }
 
-handle_py () {
+function handle_py () {
 
   PRE_ENV_VARIABLES="$( echo "$FILE_CONTENTS" | grep os.environ )" # Stores the grepped raw data
   ENV_VARIABLES=()
@@ -43,9 +43,15 @@ handle_py () {
 FILE_TYPE=$1 
 ENV_VARIABLES=()
 
-FILE_PATHS=$(find . \
-  -type d \( -wholename './.*' -o -name 'node_modules' \) -prune -false \
-  -o -type f -name "*.$FILE_TYPE")
+if [[ $FILE_TYPE == "py" ]];then
+  FILE_PATHS=$(find . \
+    -type d \( -wholename './.*' -o -name '.venv' \) -prune -false \
+    -o -type f -name "*.$FILE_TYPE")
+elif [[ $FILE_TYPE == "js" ]]; then
+  FILE_PATHS=$(find . \
+    -type d \( -wholename './.*' -o -name 'node_modules' \) -prune -false \
+    -o -type f -name "*.$FILE_TYPE")
+fi
 
 ENV_VARIABLES=()
 
