@@ -13,20 +13,8 @@ A lightweight shell script to automatically generate a `.env.example` file by sc
 
 ## Usage
 
-1. **Clone the repository:**
-   ```sh
-   git clone https://github.com/shri-acha/autoEnvGen.git
-   ```
-
-2. **Make the script executable:**
-   ```sh
-   chmod +x autoEnvGen.sh
-   ```
-
-3. **Run the script in your project directory:**
-   ```sh
-   ./autoEnvGen.sh
-   ```
+**Run the script**
+  ```bash <(curl -s https://raw.githubusercontent.com/shri-acha/autoEnvGen/main/autoEnvGen.sh) py>```
    This will scan your codebase and generate a `.env.example` with all detected environment variables.
 
 ## Example
